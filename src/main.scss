@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;700;900&display=swap');
+
+$white: #fffdfe;
+
+$theme-colors: (
+  "light": #e1f1f9,
+  "dark": #231d1e,
+  "primary": #1f3f5d,
+  "secondary": #127383,
+  "info": #51f0b5,
+  "success": #0eac5f,
+  "warning": #e7cc0d,
+  "danger": #f80805,
+);
+
+@import "bootstrap";
+
+$font-family-sans-serif: 'Noto Sans', sans-serif;
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.clear-input {
+  border-color: transparent;
+}
+
+.logo {
+  max-width: 200px;
+  max-height: 80px;
+}
+
+.is-hidden {
+  opacity: 0;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.menu {
+  max-height: 400px;
+  overflow-y: scroll;
+  box-shadow: 0 3px 3px;
+  padding: 2px 5px;
+  font-size: 1rem;
+  text-align: left;
+  z-index: 12;
+}
+
+.list-item {
+  display: inline-block;
+  margin: 0 10px;
+  border-bottom: 1px solid #ccc;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #ccc;
+  }
+}
+
+a {
+  color: #42b983
+}
+
+input {
+  width: 400px;
+}
