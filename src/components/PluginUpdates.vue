@@ -80,13 +80,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useMainStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import Editor from '@tinymce/tinymce-vue'
-import IEnumPlugins from '@/imports/interfaces/store/IEnumPlugins'
+import { defineComponent } from 'vue';
+import { useMainStore } from '@/store';
+import { storeToRefs } from 'pinia';
+import Editor from '@tinymce/tinymce-vue';
+import IEnumPlugins from '@/imports/interfaces/store/IEnumPlugins';
 
-const API_URL = 'https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&request[search]=:query'
+const API_URL = 'https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&request[search]=:query';
 
 export default defineComponent({
   name: 'PluginUpdates',
@@ -97,7 +97,7 @@ export default defineComponent({
     return {
       plugins: [],
       searchTerm: '',
-    }
+    };
   },
   methods: {
     selectPlugin (pluginName) {
@@ -105,39 +105,39 @@ export default defineComponent({
         name: pluginName['name'],
         short_description: pluginName.short_description,
         icons: pluginName.icons,
-      }
-      this.pluginsList.push(plugin)
-      this.searchTerm = ''
-      this.plugins = []
+      };
+      this.pluginsList.push(plugin);
+      this.searchTerm = '';
+      this.plugins = [];
     },
     removePlugin (index) {
-      this.pluginsList.splice(index, 1)
+      this.pluginsList.splice(index, 1);
     },
     async searchPlugin (searchTerm) {
       if (searchTerm !== '') {
-        const res = await fetch(API_URL.replace(':query', searchTerm))
+        const res = await fetch(API_URL.replace(':query', searchTerm));
         const {
           info,
           plugins
-        } = await res.json()
+        } = await res.json();
 
         if (info.results > 1) {
-          this.plugins = plugins
+          this.plugins = plugins;
         }
       }
     },
   },
   setup () {
-    const store = useMainStore()
+    const store = useMainStore();
     const {
       pluginsUpdates,
       pluginsList
-    } = storeToRefs(store)
+    } = storeToRefs(store);
 
     return {
       pluginsUpdates,
       pluginsList
-    }
+    };
   },
-})
+});
 </script>

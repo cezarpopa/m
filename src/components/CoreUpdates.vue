@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useMainStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import Editor from '@tinymce/tinymce-vue'
+import { defineComponent } from 'vue';
+import { useMainStore } from '@/store';
+import { storeToRefs } from 'pinia';
+import Editor from '@tinymce/tinymce-vue';
 
 export default defineComponent({
   name: 'CoreUpdates',
@@ -41,12 +41,12 @@ export default defineComponent({
     Editor
   },
   setup () {
-    const store = useMainStore()
-    const { core } = storeToRefs(store)
+    const store = useMainStore();
+    const { core } = storeToRefs(store);
 
     return {
       core,
-    }
+    };
   },
-})
+});
 </script>

@@ -8,19 +8,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useMainStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { defineComponent } from 'vue';
+import { useMainStore } from '@/store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   name: 'ReportRecommendations',
   setup() {
     const store = useMainStore();
-    const { itemState } = storeToRefs(store)
+    const { itemState } = storeToRefs(store);
 
     return {
       itemState,
-    }
+    };
   },
-})
+});
 </script>

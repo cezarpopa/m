@@ -1,7 +1,9 @@
 <template>
     <div class="col-12 my-5">
-      <input class="px-0 h2 fw-bold w-100" type="text" v-model="info.title">
-      <input type="date" class="px-0 h3 fw-bold w-100" v-model="info.date">
+      <label for="report-title">Report Title</label>
+      <input name="report-tile" class="px-0 h2 fw-bold w-100" type="text" v-model="info.title">
+      <label for="report-title">Report Date</label>
+      <input name="report-date" type="month" class="px-0 h3 fw-bold w-100" v-model="info.date">
     </div>
 </template>
 

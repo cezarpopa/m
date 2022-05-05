@@ -1,21 +1,24 @@
 import { defineStore } from 'pinia'
 import IReportState from '@/imports/interfaces/store/IReportState'
-import IReportDetails from '@/imports/interfaces/store/IReportDetails'
 import IReportInfo from '@/imports/interfaces/store/IReportInfo'
 import IEnumPlugins from '@/imports/interfaces/store/IEnumPlugins'
 import IPluginsInfo from '@/imports/interfaces/store/IPluginsInfo'
 import ICoreInfo from '@/imports/interfaces/store/ICoreInfo'
 import IHealthInfo from '@/imports/interfaces/store/IHealthInfo'
+import IReportHeader from "@/imports/interfaces/store/IReportHeader";
+
+const DEFAULT_IMG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAABQAQMAAABWL7nSAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAjUlEQVRIie3PMQrDMAyFYQVMq8FDMR3SIep7eA/kAs79b1U5Sx1KLxD0DzLmsw0WiaLocrXZB2SefLGUxfLXqIdpN+YiLH/sSSFHM7PVdLFVpkSO1tS3G7Vyk5ubDQa9w9VP+MOJhSd7Ye+2Qx6J+WwEugGCn3uV3ephTsMf0BYzmk/I/s4c/x5F0WX6ALDWD8C/qEnqAAAAAElFTkSuQmCC'
+
+const reportHeaderLogos: IReportHeader = {
+  companyLogo: DEFAULT_IMG,
+  clientLogo: DEFAULT_IMG,
+  display: true,
+}
 
 const reportStateObject: IReportState = {
   urgent: 0,
   recommended: 0,
   completed: 0,
-}
-
-const reportLogosObject: IReportDetails = {
-  client: 'Client',
-  maintainer: 'Maintainer'
 }
 
 const reportInfoObject: IReportInfo = {
@@ -45,8 +48,8 @@ const healthCheckObject: IHealthInfo = {
 
 export const useMainStore = defineStore('main', {
   state: () => ({
+    reportHeader: reportHeaderLogos,
     reportState: reportStateObject,
-    reportLogos: reportLogosObject,
     reportInfo: reportInfoObject,
     pluginsUpdates: pluginsObject,
     pluginsUpdateArray: pluginsArray,
@@ -54,8 +57,8 @@ export const useMainStore = defineStore('main', {
     healthChecks: healthCheckObject
   }),
   getters: {
+    header: state => state.reportHeader,
     itemState: state => state.reportState,
-    logos: state => state.reportLogos,
     info: state => state.reportInfo,
     plugins: state => state.pluginsUpdates,
     pluginsList: state => state.pluginsUpdateArray,

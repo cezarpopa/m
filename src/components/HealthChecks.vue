@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useMainStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import Editor from '@tinymce/tinymce-vue'
+import { defineComponent } from 'vue';
+import { useMainStore } from '@/store';
+import { storeToRefs } from 'pinia';
+import Editor from '@tinymce/tinymce-vue';
 
 export default defineComponent({
   name: 'HealthChecks',
@@ -41,12 +41,12 @@ export default defineComponent({
     Editor
   },
   setup () {
-    const store = useMainStore()
-    const { health } = storeToRefs(store)
+    const store = useMainStore();
+    const { health } = storeToRefs(store);
 
     return {
       health,
-    }
+    };
   },
-})
+});
 </script>
