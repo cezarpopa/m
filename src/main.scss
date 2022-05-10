@@ -1,16 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500;700;900&display=swap');
 
 $white: #fffdfe;
+$body-bg: #f3f2ef;
 
 $theme-colors: (
-  "light": #e1f1f9,
-  "dark": #231d1e,
-  "primary": #1f3f5d,
-  "secondary": #127383,
-  "info": #51f0b5,
-  "success": #0eac5f,
-  "warning": #e7cc0d,
-  "danger": #f80805,
+        "light": #e1f1f9,
+        "dark": #231d1e,
+        "primary": #1f3f5d,
+        "secondary": #127383,
+        "info": #51f0b5,
+        "success": #0eac5f,
+        "warning": #e7cc0d,
+        "danger": #f80805,
 );
 
 @import "bootstrap";

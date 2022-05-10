@@ -3,16 +3,12 @@
     <div class="row">
       <ReportLogos/>
       <ReportTitleInputs/>
-      <div class="col-12" ref="reportRecommendations">
-        <div class="row">
-          <ReportRecommendations/>
-        </div>
-      </div>
+      <ReportRecommendations/>
       <PluginUpdates/>
       <CoreUpdates/>
       <HealthChecks/>
 
-      <button class="btn btn-close" @click="download">Download</button>
+      <button class="btn btn-close position-fixed top-0 start-100" @click="download">Download</button>
 
       <div class="py-5"></div>
     </div>
@@ -21,7 +17,14 @@
 
 <script lang="ts">
 import { ref, onMounted, defineComponent } from 'vue';
-import html2pdf from 'html2pdf.js';
+import { Document,
+  HorizontalPositionAlign,
+  HorizontalPositionRelativeFrom,
+  ImageRun, Header, HeadingLevel,
+  VerticalPositionAlign,
+  VerticalPositionRelativeFrom, WidthType, BorderStyle, Paragraph, Packer, TextRun }
+  from "docx";
+import { saveAs } from 'file-saver';
 import { useMainStore } from '@/store';
 import PluginUpdates from '@/components/PluginUpdates.vue';
 import ReportTitleInputs from '@/components/input/ReportTitleInputs.vue';
@@ -39,7 +42,7 @@ export default defineComponent({
     ReportRecommendations,
     ReportLogos,
     ReportTitleInputs,
-    PluginUpdates
+    PluginUpdates,
   },
   data () {
     return {
@@ -68,41 +71,136 @@ export default defineComponent({
     download: function () {
       const holder = document.createElement('div');
 
-      const opt = {
-        margin: 1,
-        filename: 'maintenance-report.pdf',
-        image: {
-          type: 'jpeg',
-          quality: 0.98
+      const doc = new Document({
+        styles: {
+          default: {
+            heading1: {
+              run: {
+                size: 32,
+                bold: true,
+                color: "000000",
+              },
+              paragraph: {
+                spacing: {
+                  after: 120,
+                },
+              },
+            },
+            heading2: {
+              run: {
+                size: 28,
+                bold: true,
+                underline: {
+                  color: "000000",
+                },
+              },
+              paragraph: {
+                spacing: {
+                  before: 240,
+                  after: 120,
+                },
+              },
+            },
+            listParagraph: {
+              run: {
+                color: "#FF0000",
+              },
+            },
+          },
         },
-        pagebreak: {
-          mode: 'avoid-all',
-          before: '#page-break'
-        },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-          unit: 'in',
-          format: 'A4',
-          orientation: 'portrait'
-        }
-      };
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: this.header.companyLogo,
+                  transformation: {
+                    width: 210,
+                    height: 80,
+                  },
+                  floating: {
+                    horizontalPosition: {
+                      offset: 1014400,
+                    },
+                    verticalPosition: {
+                      offset: 1014400,
+                    },
+                  },
+                }),
+              ],
+            }),
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: this.header.clientLogo,
+                  transformation: {
+                    width: 210,
+                    height: 80,
+                  },
+                  floating: {
+                    horizontalPosition: {
+                      offset: 4614400,
+                    },
+                    verticalPosition: {
+                      offset: 1014400,
+                    },
+                  },
+                }),
+              ],
+            }),
+            new Paragraph({
+              text: this.info.title,
+              heading: HeadingLevel.TITLE,
+              spacing: {
+                before: 200,
+              },
+            }),
+            new Paragraph({
+              text: this.info.date,
+              heading: HeadingLevel.HEADING_1,
+              spacing: {
+                before: 200,
+              },
+            }),
+            new Paragraph({
+              text: this.pluginsUpdates.title,
+              heading: HeadingLevel.HEADING_1,
+              pageBreakBefore: true,
+            }),
+            new Paragraph({
+              text: this.pluginsUpdates.description,
+            }),
 
-      const imageHolder = this.generateElement('', 'div');
+            new Paragraph({
+              text: this.core.title,
+              heading: HeadingLevel.HEADING_1,
+              pageBreakBefore: true,
+            }),
+            new Paragraph({
+              text: this.core.description,
+            }),
 
-      imageHolder.append(this.generateImageTag(this.header.companyLogo));
-      imageHolder.append(this.generateImageTag(this.header.clientLogo, 'right'));
+            new Paragraph({
+              text: this.healthChecks.title,
+              heading: HeadingLevel.HEADING_1,
+              pageBreakBefore: true,
+            }),
+            new Paragraph({
+              text: this.healthChecks.description,
+            }),
+          ],
+        }],
+      });
 
-      holder.append(imageHolder);
 
-      holder.append(this.generateElement(this.info.title, 'h1', this.h1PrefaceStyle));
-      holder.append(this.generateElement(this.info.date, 'h2', this.h2PrefaceStyle));
+      Packer.toBlob(doc).then((buffer) => {
+        saveAs(buffer, "detailed_report.docx");
+      });
+
       holder.append(this.$refs.reportRecommendations as HTMLElement);
 
-      holder.append(this.pareBreakElement());
-
       if (this.pluginsUpdates.display) {
-        holder.append(this.generateElement(this.pluginsUpdates.title, 'h2', this.h2PageStyle));
-        holder.append(this.generateElement(this.pluginsUpdates.description));
 
         const ul = document.createElement('ol');
 
@@ -119,22 +217,18 @@ export default defineComponent({
         });
 
         holder.append(ul);
-        holder.append(this.pareBreakElement());
       }
 
       if (this.core.display) {
         holder.append(this.generateElement(this.core.title, 'h2', this.h2PageStyle));
         holder.append(this.generateElement(this.core.description));
-        holder.append(this.pareBreakElement());
       }
 
       if (this.healthChecks.display) {
         holder.append(this.generateElement(this.healthChecks.title, 'h2', this.h2PageStyle));
         holder.append(this.generateElement(this.healthChecks.description));
-        holder.append(this.pareBreakElement());
       }
 
-      html2pdf().from(holder).set(opt).save();
     },
     generateElement: function (value: string, type = 'div', cssValues = {}) {
       const htmlElement = document.createElement(type);
@@ -145,22 +239,6 @@ export default defineComponent({
       }
 
       return htmlElement;
-    },
-    generateImageTag: function (value: string, direction = 'unset') {
-      const imageElement = document.createElement('img');
-
-      imageElement.width = 210;
-      imageElement.height = 80;
-      imageElement.src = value;
-      imageElement.style.float = direction;
-
-      return imageElement;
-    },
-    pareBreakElement: function () {
-      const pagebreak = document.createElement('div');
-      pagebreak.id = 'page-break';
-
-      return pagebreak;
     },
     elementCssStyle: function (element: HTMLElement, style) {
       for (const property in style) {
