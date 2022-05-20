@@ -8,7 +8,7 @@
       <CoreUpdates/>
       <HealthChecks/>
 
-      <button class="btn btn-close position-fixed top-0 start-100" @click="download">Download</button>
+      <button class="btn btn-outline-primary" @click="download">Download</button>
 
       <div class="py-5"></div>
     </div>
@@ -171,7 +171,15 @@ export default defineComponent({
             new Paragraph({
               text: this.pluginsUpdates.description,
             }),
+            ...this.pluginsList
+                .map((plugin) => {
+                  const arr: Paragraph[] = [];
 
+                  arr.push(this.itemisePlugin(plugin));
+
+                  return arr;
+                })
+                .reduce((prev, curr) => prev.concat(curr), []),
             new Paragraph({
               text: this.core.title,
               heading: HeadingLevel.HEADING_1,
@@ -180,7 +188,6 @@ export default defineComponent({
             new Paragraph({
               text: this.core.description,
             }),
-
             new Paragraph({
               text: this.healthChecks.title,
               heading: HeadingLevel.HEADING_1,
@@ -193,58 +200,18 @@ export default defineComponent({
         }],
       });
 
-
       Packer.toBlob(doc).then((buffer) => {
         saveAs(buffer, "detailed_report.docx");
       });
-
-      holder.append(this.$refs.reportRecommendations as HTMLElement);
-
-      if (this.pluginsUpdates.display) {
-
-        const ul = document.createElement('ol');
-
-        this.pluginsList.forEach( plugin => {
-          const name = this.generateElement(plugin.name, 'strong');
-          const delimiter = this.generateElement(' - ', 'span');
-          const description = this.generateElement(plugin.short_description, 'span');
-          const li = this.generateElement('', 'li');
-
-          li.append(name);
-          li.append(delimiter);
-          li.append(description);
-          ul.append(li);
-        });
-
-        holder.append(ul);
-      }
-
-      if (this.core.display) {
-        holder.append(this.generateElement(this.core.title, 'h2', this.h2PageStyle));
-        holder.append(this.generateElement(this.core.description));
-      }
-
-      if (this.healthChecks.display) {
-        holder.append(this.generateElement(this.healthChecks.title, 'h2', this.h2PageStyle));
-        holder.append(this.generateElement(this.healthChecks.description));
-      }
-
     },
-    generateElement: function (value: string, type = 'div', cssValues = {}) {
-      const htmlElement = document.createElement(type);
-      htmlElement.innerHTML = value;
-
-      if (cssValues !== {}) {
-        this.elementCssStyle(htmlElement, cssValues);
-      }
-
-      return htmlElement;
+    itemisePlugin: function (plugin) {
+      return new Paragraph({
+        text: plugin.name + ' - ' + plugin.short_description,
+        bullet: {
+          level: 0
+        }
+      });
     },
-    elementCssStyle: function (element: HTMLElement, style) {
-      for (const property in style) {
-        element.style[property] = style[property];
-      }
-    }
   },
   setup () {
     const store = useMainStore();
